@@ -92,6 +92,21 @@ def login():
     return render_template('login.html', form=form)
 
 
+import os
+def get_uploaded_images():
+    a=[]
+    rootdir = os.getcwd()
+    print (rootdir)
+    for subdir, dirs, files in os.walk(rootdir + app.config['UPLOAD_FOLDER']):
+        for file in files:
+            a.append(file)
+    return a
+
+@app.route('/profiles')
+def profiles():
+    profile = UserProfile.query.all() 
+    return render_template('profiles.html',pics = get_uploaded_images(), profile = profile)
+    
 @app.route('/profileuserid/<int:userid>')
 def profileuserid(userid):
     profile = UserProfile.query.filter_by(id=userid).first()
