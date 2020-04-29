@@ -1,21 +1,12 @@
 {% extends "base.html"%}
 
-{% block main %} 
-<h1 class="page-header">Profiles</h1>
-{% include 'flash_messages.html' %}
-{%for profile in profiles%}
-<div id = "holder">
-<p>
-<img src = "{{url_for('static', filename = "uploads/"+profile.File)}}"/>
-<b>{{profile.First_name}} {{profile.Last_name}}</b> <br> {{profile.Gender}} <br> {{profile.Location}}</p>
-<a href = "{{url_for('profileuserid', userid = profile.id)}}"
-
-<button type="submit" id = "View">View Profile</button></a>
-<br><br><br>
-</div>
-{%endfor%}
-
-
-
-
-{% endblock %}.
+{%block main%}
+	<h1 class="page-header">Profiles</h1>
+	<h2>PROFILES</h2>
+	{%for profile in profile%} 
+		<img src="{{url_for('static',filename="uploads/"+profile.File) }}"/>
+		<p><b>{{profile.First_name}} {{profile.Last_name}}</b> <br> {{profile.Gender}} <br> {{profile.Location}}</p>
+		<a href="{{url_for('profileuserid',userid=profile.id)}}" class="btn btn-primary btn-block">View Profile</a>
+		<br><br><br>
+	{%endfor%}
+{% endblock %}
