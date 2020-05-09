@@ -22,3 +22,9 @@ class ProfileForm(FlaskForm):
 class LoginForm(FlaskForm):
     Username = StringField('Username', validators=[InputRequired()])
     Password = PasswordField('Password', validators=[InputRequired()])
+
+class SearchForm(FlaskForm):
+    Search = StringField('Search', validators=[InputRequired()])
+
+class GroupForm(FlaskForm):
+    Name = StringField('Group Name', validators =[InputRequired()])

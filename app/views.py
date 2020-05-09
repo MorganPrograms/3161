@@ -8,8 +8,8 @@ import os
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import ProfileForm, LoginForm
-from app.models import UserProfile
+from app.forms import ProfileForm, SearchForm, GroupForm
+
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 import datetime 
@@ -29,6 +29,42 @@ def home():
 def about():
     """Render the website's about page."""
     return render_template('about.html')
+
+@app.route('/friendslist/')
+def friendslist(userid):
+    cur.execute("SELECT friend_id FROM friends_with WHERE user_id ='{}'".format(userid))
+    results = cur.fetchall()
+    #I'm trying to get the user data from all those friendids.
+    cur.execute("Select firstname, lastname FROM 
+    return render_template('friendslist.html', profiles = results) 
+    
+    
+@app.route('/groups/<int:groupid>')
+def allgroups(groupid):
+    cur.execute("SELECT group_id FROM Group1 WHERE group_id = '{}'".format(groupid))
+    result = cur.fetchall()
+    return render_template('groups.html', group = result)
+
+@app.route('/creategroup',methods =['POST','GET'])
+def creategroup():
+    
+    if request.method == 'GET':
+        form = GroupForm()
+        return render_template('creategroup.html', form = form)
+    form = GroupForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        Name = form.Name.data
+        return redirect(url_for('Groups'))
+    
+#Do we even have a table to list all the groups? Users are supposed to join any group that there is. 
+@app.route('/Groups/')
+def Groups():    
+    return render_template('Groups.html')
+    
+@app.route('/friends/')
+def friends(userid):
+    return render_template('friends.html')    
+    
 
 @app.route('/profile', methods=['POST', 'GET'])
 def profile():
@@ -92,25 +128,23 @@ def login():
     return render_template('login.html', form=form)
 
 
-import os
-def get_uploaded_images():
-    a=[]
-    rootdir = os.getcwd()
-    print (rootdir)
-    for subdir, dirs, files in os.walk(rootdir + app.config['UPLOAD_FOLDER']):
-        for file in files:
-            a.append(file)
-    return a
-
-@app.route('/profiles')
-def profiles():
-    profile = UserProfile.query.all() 
-    return render_template('profiles.html',pics = get_uploaded_images(), profile = profile)
-    
+@app.route('/profiles',methods=['POST', 'GET'])
+def profiles(userid):
+    if request.method == 'GET':
+        form = SearchForm()
+        return render_template('profiles.html', form = form)
+    if request.method == 'POST' and form.validate_on_submit():
+        
+        # Get file data and save to your uploads folder
+        search = form.search.data
+        cur.execute("SELECT * FROM USER WHERE firstname LIKE '{}'".format(search))
+        result = cur.fetchall()
+        return redirect(url_for('friends', profiles = results, userid = userid ))
+    return render_template('profiles.html')
 @app.route('/profileuserid/<int:userid>')
 def profileuserid(userid):
     profile = UserProfile.query.filter_by(id=userid).first()
-    return render_template('profileuserid.html', profile = profile)
+    return render_template('profileuserid.html', profile = profile, userid = userid)
 @app.route('/secure-page')
 @login_required
 def secure_page():

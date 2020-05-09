@@ -1,12 +1,22 @@
 {% extends "base.html"%}
 
-{%block main%}
-	<h1 class="page-header">Profiles</h1>
-	<h2>PROFILES</h2>
-	{%for profile in profile%} 
-		<img src="{{url_for('static',filename="uploads/"+profile.File) }}"/>
-		<p><b>{{profile.First_name}} {{profile.Last_name}}</b> <br> {{profile.Gender}} <br> {{profile.Location}}</p>
-		<a href="{{url_for('profileuserid',userid=profile.id)}}" class="btn btn-primary btn-block">View Profile</a>
-		<br><br><br>
-	{%endfor%}
-{% endblock %}
+{% block main %} 
+<h1 class="page-header">Friend Search</h1>
+{% include 'flash_messages.html' %}
+<h2>Enter a Name below</h2>
+<div id = "container">
+<form action="{{ url_for('profile') }}" method="post" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.Search.label}} {{ form.Search(class="form-control") }}
+        </div>
+<a href = "{{url_for('friends', userid = userid)}}"
+
+ <button type="submit" id="button">Search</button></a>
+   
+</form>
+
+
+
+
+{% endblock %}.
